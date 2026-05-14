@@ -12,7 +12,6 @@ import (
 var DB *gorm.DB
 
 func ConnectDB() {
-
 	dsn := fmt.Sprintf(
 		"%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local",
 		viper.GetString("DB_USER"),
@@ -24,8 +23,14 @@ func ConnectDB() {
 
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 
+	sqlDB, err := db.DB()
 	if err != nil {
-		log.Fatal("Cannot connect database")
+		log.Fatal("Cannot get sql.DB:", err)
+	}
+
+	err = sqlDB.Ping()
+	if err != nil {
+		log.Fatal("Database ping failed:", err)
 	}
 
 	DB = db
