@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"golang-blog-api/domain"
 	"golang-blog-api/exception"
+	"golang-blog-api/helper"
 	"golang-blog-api/model/web"
 	"golang-blog-api/repository"
 	"time"
@@ -35,9 +36,7 @@ func (s *UserServiceImpl) Register(ctx context.Context, req web.UserCreateReques
 		return web.UserResponse{}, err
 	}
 
-	id := uuid.New()
 	user := domain.User{
-		ID:       id,
 		Name:     req.Name,
 		Email:    req.Email,
 		Password: string(hashedPassword),
@@ -45,11 +44,7 @@ func (s *UserServiceImpl) Register(ctx context.Context, req web.UserCreateReques
 
 	result, err := s.Repo.Save(ctx, user)
 
-	return web.UserResponse{
-		ID:    result.ID,
-		Name:  result.Name,
-		Email: result.Email,
-	}, err
+	return helper.ToUserResponse(result), nil
 }
 
 func (s *UserServiceImpl) Login(ctx context.Context, req web.UserLoginRequest) (web.UserLoginResponse, error) {
@@ -93,7 +88,6 @@ func (s *UserServiceImpl) Login(ctx context.Context, req web.UserLoginRequest) (
 
 func (s *UserServiceImpl) Update(ctx context.Context, id uuid.UUID, req web.UserUpdateRequest) (web.UserResponse, error) {
 	user := domain.User{
-		ID:    id,
 		Name:  req.Name,
 		Email: req.Email,
 	}
@@ -108,11 +102,7 @@ func (s *UserServiceImpl) Update(ctx context.Context, id uuid.UUID, req web.User
 		}
 	}
 
-	return web.UserResponse{
-		ID:    result.ID,
-		Name:  result.Name,
-		Email: result.Email,
-	}, err
+	return helper.ToUserResponse(result), nil
 
 }
 
@@ -137,11 +127,7 @@ func (s *UserServiceImpl) FindByID(ctx context.Context, id uuid.UUID) (web.UserR
 		}
 	}
 
-	return web.UserResponse{
-		ID:    user.ID,
-		Name:  user.Name,
-		Email: user.Email,
-	}, nil
+	return helper.ToUserResponse(user), nil
 }
 func (s *UserServiceImpl) FindAll(ctx context.Context) ([]web.UserResponse, error) {
 	users, err := s.Repo.FindAll(ctx)

@@ -26,11 +26,15 @@ func main() {
 		IdleTimeout:  time.Second * 5,
 	})
 
-	repo := repository.NewUserRepository(database.DB)
-	svc := service.NewUserService(repo)
-	h := handler.NewUserHandler(svc)
+	userRepo := repository.NewUserRepository(database.DB)
+	userService := service.NewUserService(userRepo)
+	userHandler := handler.NewUserHandler(userService)
 
-	routes.Setup(app, h)
+	todoRepo := repository.NewTodoRepository(database.DB)
+	todoService := service.NewTodoService(todoRepo)
+	todoHandler := handler.NewTodoHandler(todoService)
+
+	routes.Setup(app, userHandler, todoHandler)
 
 	log.Fatal(app.Listen(":3000", fiber.ListenConfig{}))
 }

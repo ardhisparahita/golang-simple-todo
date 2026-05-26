@@ -41,7 +41,7 @@ func (h *UserHandler) Register(c fiber.Ctx) error {
 	}
 
 	return c.Status(fiber.StatusCreated).JSON(helper.WebResponse{
-		StatusCode: 200,
+		StatusCode: fiber.StatusCreated,
 		Status:     "Success",
 		Message:    "Success created user",
 		Data:       result,
@@ -181,7 +181,7 @@ func (h *UserHandler) Me(c fiber.Ctx) error {
 		return c.Status(400).JSON(helper.WebResponse{
 			StatusCode: 400,
 			Status:     "Error",
-			Message:    "user not found 3",
+			Message:    "user not found",
 		})
 	}
 

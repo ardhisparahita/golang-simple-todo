@@ -7,7 +7,7 @@ import (
 	"github.com/gofiber/fiber/v3"
 )
 
-func Setup(app *fiber.App, h *handler.UserHandler) {
+func Setup(app *fiber.App, h *handler.UserHandler, t *handler.TodoHandler) {
 
 	v1 := app.Group("/api/v1")
 
@@ -21,4 +21,11 @@ func Setup(app *fiber.App, h *handler.UserHandler) {
 	users.Delete("/:id", middleware.Ownership(), h.Delete)
 	users.Get("/:id", h.FindByID)
 	users.Get("/", h.FindAll)
+
+	todo := v1.Group("/todos", middleware.JWTProtected())
+	todo.Post("/", t.Create)
+	todo.Put("/:id", t.Update)
+	todo.Delete("/:id", t.Delete)
+	todo.Get("/:id", t.FindByID)
+	todo.Get("/", t.FindByUserID)
 }

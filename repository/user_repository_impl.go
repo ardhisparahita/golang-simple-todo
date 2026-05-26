@@ -54,7 +54,7 @@ func (r *UserRepositoryImpl) Delete(ctx context.Context, id uuid.UUID) error {
 func (r *UserRepositoryImpl) FindByID(ctx context.Context, id uuid.UUID) (domain.User, error) {
 	var user domain.User
 
-	err := r.DB.WithContext(ctx).Take(&user, "id = ?", id).Error
+	err := r.DB.WithContext(ctx).First(&user, "id = ?", id).Error
 	return user, err
 }
 

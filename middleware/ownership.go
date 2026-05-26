@@ -4,7 +4,12 @@ import "github.com/gofiber/fiber/v3"
 
 func Ownership() fiber.Handler {
 	return func(c fiber.Ctx) error {
-		userId := c.Locals("userId").(string)
+		userId, ok := c.Locals("userId").(string)
+		if !ok {
+			return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+				"error": "unauthorized",
+			})
+		}
 
 		paramId := c.Params("id")
 
